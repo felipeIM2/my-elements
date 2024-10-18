@@ -1,41 +1,32 @@
+
 const contextMenu = document.getElementById("contextMenu");
 
-
-
-// Mostrar o menu de contexto ao clicar com o botão direito
 document.addEventListener("contextmenu", function (e) {
    
   const elementoClicado = e.target 
   
   const verifyModal = document.getElementById('modal')
-  const 
+  const menu = document.getElementById('contextMenu')
+   
 
   if(verifyModal.className === 'modalOff' && elementoClicado.className === 'line' ){
     e.preventDefault(); 
     contextMenu.style.display = "block";
     contextMenu.style.left = e.pageX + "px";
     contextMenu.style.top = e.pageY + "px";
-
-  }else if(verifyModal.className != 'modalOff'){
-      let modal = document.getElementById("modal")
-     // modal.classList = "modalOn"
-    alert("modal esta on")
+    
+  }else if(menu.style.display){
+    contextMenu.style.display = "none";
   }
 
-  
-  //console.log(elementoClicado)
 
-
-
-
-// Adicionar eventos de clique nas opções do menu
 contextMenu.querySelectorAll("li").forEach(function (item) {
     item.addEventListener("click", function () {
 
       
       let items = item.innerText.toLocaleLowerCase();
       let text = elementoClicado.innerText 
-
+        
       if(items === "editar"){
         
         let modal = document.getElementById("modal")
@@ -47,10 +38,24 @@ contextMenu.querySelectorAll("li").forEach(function (item) {
         let input = document.getElementById('altertext')
         input.value = text
 
-        let sendButton = document.getElementById('catch')
-        sendButton.addEventListener('click', () => {
-          console.log("okenvia")
-        });
+         let sendButton = document.getElementById('catch')
+        // sendButton.addEventListener('click', () => {
+        // }, {once:true});
+
+        sendButton.addEventListener('click', atualizarTexto);
+
+        function atualizarTexto() {
+          let newInfo = document.getElementById('altertext');
+          elementoClicado.innerText = newInfo.value
+          
+          let modal = document.getElementById("modal")
+          modal.classList = "modalOff"
+        }
+        
+        
+        //sendButton.removeEventListener('click', atualizarTexto);
+
+        
 
       
       } else if(items === "alterar"){
