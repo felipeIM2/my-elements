@@ -1,107 +1,88 @@
-
 const contextMenu = document.getElementById("contextMenu");
 
 document.addEventListener("contextmenu", function (e) {
-   
-  const elementoClicado = e.target 
+  const elementoClicado = e.target;
+  const verifyModal = document.getElementById('modal');
   
-  const verifyModal = document.getElementById('modal')
-  const menu = document.getElementById('contextMenu')
-   
-
-  if(verifyModal.className === 'modalOff' && elementoClicado.className === 'line' ){
-    e.preventDefault(); 
+  if (verifyModal.classList.contains('modalOff') && elementoClicado.classList.contains('line')) {
+    e.preventDefault();
     contextMenu.style.display = "block";
     contextMenu.style.left = e.pageX + "px";
     contextMenu.style.top = e.pageY + "px";
-    
-  }else if(menu.style.display){
+  } else if (contextMenu.style.display === "block") {
     contextMenu.style.display = "none";
   }
 
+  contextMenu.querySelectorAll("li").forEach(function (item) {
+    item.onclick = function () {
 
-contextMenu.querySelectorAll("li").forEach(function (item) {
-    item.addEventListener("click", function () {
+      const text = elementoClicado.innerText;
+      const items = item.innerText.toLowerCase();
+      const sendButton = document.getElementById('catch');
+      const input = document.getElementById('altertext');
 
-      
-      let items = item.innerText.toLocaleLowerCase();
-      let text = elementoClicado.innerText 
-        
-      if(items === "editar"){
-        
-        let modal = document.getElementById("modal")
-        modal.classList = "modalOn"
+      if (items === "editar" || items === "alterar") {
+        if(items === "editar"){
 
-        let nameModal = document.getElementById("nameModal")
-        nameModal.innerText = items.toLocaleUpperCase();
+          //console.log("Editar")
 
-        let input = document.getElementById('altertext')
-        input.value = text
+           openModal(items);
+           incluir(sendButton, text, elementoClicado, input);
 
-         let sendButton = document.getElementById('catch')
-        // sendButton.addEventListener('click', () => {
-        // }, {once:true});
 
-        sendButton.addEventListener('click', atualizarTexto);
+        }else if(items === "alterar"){
+         // console.log("Alterar")
 
-        function atualizarTexto() {
-          let newInfo = document.getElementById('altertext');
-          elementoClicado.innerText = newInfo.value
-          
-          let modal = document.getElementById("modal")
-          modal.classList = "modalOff"
+
         }
-        
-        
-        //sendButton.removeEventListener('click', atualizarTexto);
-
-        
-
-      
-      } else if(items === "alterar"){
-        
-        let modal = document.getElementById("modal")
-        modal.classList = "modalOn"
-
-        let input = document.getElementById('altertext')
-        input.value = text
-
-        let nameModal = document.getElementById("nameModal")
-        nameModal.innerText = items.toLocaleUpperCase();
-
-
       }
 
-
-      let cancelar = document.getElementById('back');
-      cancelar.addEventListener("click", () => verifyModal.classList ='modalOff');
+      const cancelar = document.getElementById('back');
+      cancelar.onclick = () => closeModal();
 
       contextMenu.style.display = "none";
-    });
-    
+    };
   });
-
 });
-
 
 
 document.addEventListener("click", function () {
   contextMenu.style.display = "none";
-
-   const verifyModal = document.getElementById('modal');
-   const popup = document.querySelector('.popup');
-
-    verifyModal.addEventListener("click", ()=>{
-      if(verifyModal.className === 'modalOn'){
-        verifyModal.classList = "modalOff"
-      }
-    })
-    popup.addEventListener("click", (event) => {
-      event.stopPropagation();
-    });
-
+  const verifyModal = document.getElementById('modal');
+  
+  if (verifyModal.classList.contains('modalOn')) {
+    verifyModal.onclick = () => closeModal();
+  }
+  
+  const popup = document.querySelector('.popup');
+  popup.onclick = (event) => {
+    event.stopPropagation();
+  };
 });
 
 
 
 
+
+
+function incluir(sendButton, text, elementoClicado, input){
+   input.value = text;
+  sendButton.onclick = () => {
+    elementoClicado.innerText = input.value;
+     closeModal();
+  };
+}
+
+function openModal(items){
+  const modal = document.getElementById("modal");
+  modal.classList.remove("modalOff");
+  modal.classList.add("modalOn");
+  const nameModal = document.getElementById("nameModal");
+  nameModal.innerText = items.toUpperCase();
+}
+
+function closeModal(){
+  const modal = document.getElementById("modal");
+  modal.classList.remove("modalOn");
+  modal.classList.add("modalOff");
+}
